@@ -36,14 +36,10 @@ yarn add @ladjs/shared-config
 
 ## Usage
 
-```js
-const @ladjs/sharedConfig = require('@ladjs/shared-config');
+See Lad's implementation for API or Web Server:
 
-const @ladjs/sharedConfig = new @ladjs/sharedConfig();
-
-console.log(@ladjs/sharedConfig.renderName());
-// script
-```
+* API: <https://github.com/ladjs/api>
+* Web: <https://github.com/ladjs/web>
 
 
 ## Contributors
