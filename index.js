@@ -40,9 +40,16 @@ function sharedConfig(prefix) {
     rateLimit,
     // <https://github.com/koajs/cors#corsoptions>
     cors: {},
-    timeoutMs: process.env[`${prefix}_TIMEOUT_MS`]
-      ? parseInt(process.env[`${prefix}_TIMEOUT_MS`], 10)
-      : 2000,
+    // <https://github.com/ladjs/timeout>
+    timeout: {
+      ms: process.env[`${prefix}_TIMEOUT_MS`]
+        ? parseInt(process.env[`${prefix}_TIMEOUT_MS`], 10)
+        : 2000,
+      message: ctx =>
+        ctx.request.t(
+          'Your request has timed out and we have been alerted of this issue. Please try again or contact us.'
+        )
+    },
     auth: false,
     // these are hooks that can get run before/after configuration
     // and must be functions that accept one argument `app`
