@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+const Redis = require('ioredis');
+
 const env = process.env.NODE_ENV || 'development';
 
 let rateLimit = {
@@ -17,10 +19,14 @@ let rateLimit = {
 
 if (env === 'development') rateLimit = false;
 
+const redisClient = new Redis({
+  showFriendlyErrorStack: env === 'development'
+});
+
 function sharedConfig(prefix) {
   prefix = prefix.toUpperCase();
   const config = {
-    cabin: { axe: { capture: false } },
+    cabin: { capture: false },
     protocol: process.env[`${prefix}_PROTOCOL`] || 'http',
     ssl: {
       key: process.env[`${prefix}_SSL_KEY_PATH`]
@@ -54,7 +60,11 @@ function sharedConfig(prefix) {
     // these are hooks that can get run before/after configuration
     // and must be functions that accept one argument `app`
     hookBeforeSetup: false,
-    hookBeforeRoutes: false
+    hookBeforeRoutes: false,
+    // <https://github.com/luin/ioredis>
+    // this is used for rate limiting and session storage (e.g. passport)
+    // we support ioredis which allows clustering, sentinels, etc
+    redisClient
   };
   return config;
 }
