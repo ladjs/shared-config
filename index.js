@@ -64,7 +64,9 @@ function sharedConfig(prefix) {
     // <https://github.com/luin/ioredis>
     // this is used for rate limiting and session storage (e.g. passport)
     // we support ioredis which allows clustering, sentinels, etc
-    redisClient
+    redisClient,
+    // <https://github.com/ladjs/store-ip-address>
+    storeIPAddress: {}
   };
   return config;
 }
