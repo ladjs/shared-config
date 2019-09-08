@@ -1,27 +1,24 @@
 const fs = require('fs');
 
-const Redis = require('ioredis');
+const Redis = require('@ladjs/redis');
 
 const env = process.env.NODE_ENV || 'development';
+const isDev = env === 'development';
 
-let rateLimit = {
-  duration: process.env.RATELIMIT_DURATION
-    ? parseInt(process.env.RATELIMIT_DURATION, 10)
-    : 60000,
-  max: process.env.RATELIMIT_MAX
-    ? parseInt(process.env.RATELIMIT_MAX, 10)
-    : 100,
-  id: ctx => ctx.ip,
-  prefix: process.env.RATELIMIT_PREFIX
-    ? process.env.RATELIMIT_PREFIX
-    : `limit_${env.toLowerCase()}`
-};
-
-if (env === 'development') rateLimit = false;
-
-const redisClient = new Redis({
-  showFriendlyErrorStack: env === 'development'
-});
+const rateLimit = isDev
+  ? false
+  : {
+      duration: process.env.RATELIMIT_DURATION
+        ? parseInt(process.env.RATELIMIT_DURATION, 10)
+        : 60000,
+      max: process.env.RATELIMIT_MAX
+        ? parseInt(process.env.RATELIMIT_MAX, 10)
+        : 100,
+      id: ctx => ctx.ip,
+      prefix: process.env.RATELIMIT_PREFIX
+        ? process.env.RATELIMIT_PREFIX
+        : `limit_${env.toLowerCase()}`
+    };
 
 function sharedConfig(prefix) {
   prefix = prefix.toUpperCase();
@@ -61,13 +58,18 @@ function sharedConfig(prefix) {
     // and must be functions that accept one argument `app`
     hookBeforeSetup: false,
     hookBeforeRoutes: false,
-    // <https://github.com/luin/ioredis>
-    // this is used for rate limiting and session storage (e.g. passport)
-    // we support ioredis which allows clustering, sentinels, etc
-    redisClient,
     // <https://github.com/ladjs/store-ip-address>
-    storeIPAddress: {}
+    storeIPAddress: {},
+    // ioredis configuration object
+    // <https://github.com/luin/ioredis/blob/master/API.md#new-redisport-host-options>
+    redis: {
+      showFriendlyErrorStack: isDev
+    }
   };
+  // <https://github.com/luin/ioredis>
+  // this is used for rate limiting and session storage (e.g. passport)
+  // we support ioredis which allows clustering, sentinels, etc
+  config.redisClient = new Redis(config.redis, config.logger, isDev);
   return config;
 }
 

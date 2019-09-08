@@ -412,6 +412,13 @@
   dependencies:
     arrify "^1.0.1"
 
+"@ladjs/redis@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@ladjs/redis/-/redis-1.0.0.tgz#a79023e7be1e4184d9581087ce2591d24b2cdf63"
+  integrity sha512-I3F1mOkAT+u1sHL6G+ZV/Mz9fR/ywCWiHjRGwOsitc33qDKMD8kbF0R5HIK7227BIx5axEMGOk3cDMq/tLYfqg==
+  dependencies:
+    ioredis "^4.14.0"
+
 "@marionebl/sander@^0.6.0":
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/@marionebl/sander/-/sander-0.6.1.tgz#1958965874f24bc51be48875feb50d642fc41f7b"
