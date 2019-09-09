@@ -1,6 +1,5 @@
 const fs = require('fs');
 
-const Redis = require('@ladjs/redis');
 const boolean = require('boolean');
 
 const env = process.env.NODE_ENV || 'development';
@@ -77,6 +76,7 @@ function sharedConfig(prefix) {
         process.env[`${prefix}_REDIS_SHOW_FRIENDLY_ERROR_STACK`]
       )
     },
+    redisMonitor: boolean(process.env[`${prefix}_REDIS_MONITOR`]),
     // mongoose/mongo configuration object (passed to @ladjs/mongoose)
     mongoose: {
       debug: boolean(process.env[`${prefix}_MONGOOSE_DEBUG`]),
@@ -94,16 +94,6 @@ function sharedConfig(prefix) {
       }
     }
   };
-  // inherit logger
-  config.mongoose.logger = config.logger;
-  // <https://github.com/luin/ioredis>
-  // this is used for rate limiting and session storage (e.g. passport)
-  // we support ioredis which allows clustering, sentinels, etc
-  config.redisClient = new Redis(
-    config.redis,
-    config.logger,
-    boolean(process.env[`${prefix}_REDIS_MONITOR`])
-  );
   return config;
 }
 

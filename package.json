@@ -20,7 +20,6 @@
     "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)"
   ],
   "dependencies": {
-    "@ladjs/redis": "^1.0.0",
     "boolean": "^1.0.0"
   },
   "devDependencies": {
