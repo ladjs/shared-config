@@ -23,6 +23,7 @@ const rateLimit = isDev
 function sharedConfig(prefix) {
   prefix = prefix.toUpperCase();
   const config = {
+    port: process.env[`${prefix}_PORT`] || null,
     cabin: { capture: false },
     protocol: process.env[`${prefix}_PROTOCOL`] || 'http',
     ssl: {
