@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 const Redis = require('@ladjs/redis');
+const boolean = require('boolean');
 
 const env = process.env.NODE_ENV || 'development';
 const isDev = env === 'development';
@@ -63,13 +64,46 @@ function sharedConfig(prefix) {
     // ioredis configuration object
     // <https://github.com/luin/ioredis/blob/master/API.md#new-redisport-host-options>
     redis: {
-      showFriendlyErrorStack: isDev
+      port: process.env[`${prefix}_REDIS_PORT`]
+        ? parseInt(process.env[`${prefix}_REDIS_PORT`], 10)
+        : 6379,
+      host: process.env[`${prefix}_REDIS_HOST`]
+        ? process.env[`${prefix}_REDIS_HOST`]
+        : 'localhost',
+      password: process.env[`${prefix}_REDIS_PASSWORD`]
+        ? process.env[`${prefix}_REDIS_PASSWORD`]
+        : null,
+      showFriendlyErrorStack: boolean(
+        process.env[`${prefix}_REDIS_SHOW_FRIENDLY_ERROR_STACK`]
+      )
+    },
+    // mongoose/mongo configuration object (passed to @ladjs/mongoose)
+    mongoose: {
+      debug: boolean(process.env[`${prefix}_MONGOOSE_DEBUG`]),
+      mongo: {
+        uri: process.env[`${prefix}_MONGO_URI`],
+        options: {
+          reconnectTries: process.env[`${prefix}_MONGO_RECONNECT_TRIES`]
+            ? parseInt(process.env[`${prefix}_MONGO_RECONNECT_TRIES`], 10)
+            : Number.MAX_VALUE,
+          reconnectInterval: process.env[`${prefix}_MONGO_RECONNECT_INTERVAL`]
+            ? parseInt(process.env[`${prefix}_MONGO_RECONNECT_INTERVAL`], 10)
+            : 1000,
+          useNewUrlParser: true
+        }
+      }
     }
   };
+  // inherit logger
+  config.mongoose.logger = config.logger;
   // <https://github.com/luin/ioredis>
   // this is used for rate limiting and session storage (e.g. passport)
   // we support ioredis which allows clustering, sentinels, etc
-  config.redisClient = new Redis(config.redis, config.logger, isDev);
+  config.redisClient = new Redis(
+    config.redis,
+    config.logger,
+    boolean(process.env[`${prefix}_REDIS_MONITOR`])
+  );
   return config;
 }
 
