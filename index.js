@@ -90,7 +90,8 @@ function sharedConfig(prefix) {
           reconnectInterval: process.env[`${prefix}_MONGO_RECONNECT_INTERVAL`]
             ? parseInt(process.env[`${prefix}_MONGO_RECONNECT_INTERVAL`], 10)
             : 1000,
-          useNewUrlParser: true
+          useNewUrlParser: true,
+          useUnifiedTopology: true
         }
       }
     }
