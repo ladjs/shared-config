@@ -35,7 +35,8 @@ function sharedConfig(prefix) {
         : null,
       ca: process.env[`${prefix}_SSL_CA_PATH`]
         ? fs.readFileSync(process.env[`${prefix}_SSL_CA_PATH`])
-        : null
+        : null,
+      allowHTTP1: true
     },
     routes: false,
     logger: console,
