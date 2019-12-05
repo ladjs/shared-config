@@ -1,6 +1,7 @@
 const fs = require('fs');
 
-const boolean = require('boolean');
+const isSANB = require('is-string-and-not-blank');
+const { boolean } = require('boolean');
 
 const env = process.env.NODE_ENV || 'development';
 const isDev = env === 'development';
@@ -22,22 +23,26 @@ const rateLimit = isDev
 
 function sharedConfig(prefix) {
   prefix = prefix.toUpperCase();
+  let ssl = false;
+
+  const keys = ['KEY', 'CERT', 'CA'];
+  const validKeys = keys.filter(key =>
+    isSANB(process.env[`${prefix}_SSL_${key}_PATH`])
+  );
+  if (validKeys.length > 0) {
+    ssl = { allowHTTP1: true };
+    validKeys.forEach(key => {
+      ssl[key.toLowerCase()] = fs.readFileSync(
+        process.env[`${prefix}_SSL_${key}_PATH`]
+      );
+    });
+  }
+
   const config = {
     port: process.env[`${prefix}_PORT`] || null,
     cabin: { capture: false },
     protocol: process.env[`${prefix}_PROTOCOL`] || 'http',
-    ssl: {
-      key: process.env[`${prefix}_SSL_KEY_PATH`]
-        ? fs.readFileSync(process.env[`${prefix}_SSL_KEY_PATH`])
-        : null,
-      cert: process.env[`${prefix}_SSL_CERT_PATH`]
-        ? fs.readFileSync(process.env[`${prefix}_SSL_CERT_PATH`])
-        : null,
-      ca: process.env[`${prefix}_SSL_CA_PATH`]
-        ? fs.readFileSync(process.env[`${prefix}_SSL_CA_PATH`])
-        : null,
-      allowHTTP1: true
-    },
+    ...(ssl ? { ssl } : {}),
     routes: false,
     logger: console,
     passport: false,
