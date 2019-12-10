@@ -54,7 +54,7 @@ function sharedConfig(prefix) {
     timeout: {
       ms: process.env[`${prefix}_TIMEOUT_MS`]
         ? parseInt(process.env[`${prefix}_TIMEOUT_MS`], 10)
-        : 2000,
+        : 30000,
       message: ctx =>
         ctx.request.t(
           'Your request has timed out and we have been alerted of this issue. Please try again or contact us.'
