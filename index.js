@@ -71,6 +71,7 @@ function sharedConfig(prefix) {
         }
       }
     },
+    expectCT: true,
     // <https://github.com/ladjs/timeout>
     timeout: {
       ms: process.env[`${prefix}_TIMEOUT_MS`]
