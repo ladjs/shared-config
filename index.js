@@ -50,6 +50,28 @@ function sharedConfig(prefix) {
     rateLimit,
     // <https://github.com/koajs/cors#corsoptions>
     cors: {},
+    helmet: {
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          connectSrc: ['ws://localhost:35729'],
+          fontSrc: [
+            "'self'",
+            'http://fonts.gstatic.com',
+            'http://cdn.jsdelivr.net'
+          ],
+          imgSrc: ["'self'", 'data:'],
+          styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
+          scriptSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            'https://polyfill.io',
+            'http://localhost:35729'
+          ]
+        }
+      }
+    },
+    expectCT: true,
     // <https://github.com/ladjs/timeout>
     timeout: {
       ms: process.env[`${prefix}_TIMEOUT_MS`]
