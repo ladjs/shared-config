@@ -71,7 +71,11 @@ function sharedConfig(prefix) {
         }
       }
     },
-    expectCT: true,
+    expectCT: {
+      enforce: true,
+      // https://httpwg.org/http-extensions/expect-ct.html#maximum-max-age
+      maxAge: 30 * 60 * 60 * 1000
+    },
     // <https://github.com/ladjs/timeout>
     timeout: {
       ms: process.env[`${prefix}_TIMEOUT_MS`]
