@@ -54,7 +54,12 @@ function sharedConfig(prefix) {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          connectSrc: ['ws://localhost:35729'],
+          connectSrc: [
+            'ws://localhost:35729',
+            'http://localhost:3000',
+            'http://localhost:4000',
+            'data:'
+          ],
           fontSrc: [
             "'self'",
             'http://fonts.gstatic.com',
