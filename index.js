@@ -62,6 +62,7 @@ function sharedConfig(prefix) {
           ],
           fontSrc: [
             "'self'",
+            'data:',
             'http://fonts.gstatic.com',
             'http://cdn.jsdelivr.net'
           ],
