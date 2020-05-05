@@ -4,22 +4,6 @@ const isSANB = require('is-string-and-not-blank');
 const { boolean } = require('boolean');
 
 const env = process.env.NODE_ENV || 'development';
-const isDev = env === 'development';
-
-const rateLimit = isDev
-  ? false
-  : {
-      duration: process.env.RATELIMIT_DURATION
-        ? parseInt(process.env.RATELIMIT_DURATION, 10)
-        : 60000,
-      max: process.env.RATELIMIT_MAX
-        ? parseInt(process.env.RATELIMIT_MAX, 10)
-        : 100,
-      id: ctx => ctx.ip,
-      prefix: process.env.RATELIMIT_PREFIX
-        ? process.env.RATELIMIT_PREFIX
-        : `limit_${env.toLowerCase()}`
-    };
 
 function sharedConfig(prefix) {
   prefix = prefix.toUpperCase();
@@ -47,7 +31,32 @@ function sharedConfig(prefix) {
     logger: console,
     passport: false,
     i18n: {},
-    rateLimit,
+    rateLimit:
+      env === 'development'
+        ? false
+        : {
+            duration: process.env[`${prefix}_RATELIMIT_DURATION`]
+              ? parseInt(process.env[`${prefix}_RATELIMIT_DURATION`], 10)
+              : 60000,
+            max: process.env[`${prefix}_RATELIMIT_MAX`]
+              ? parseInt(process.env[`${prefix}_RATELIMIT_MAX`], 10)
+              : 100,
+            id: ctx => ctx.ip,
+            prefix: process.env[`${prefix}_RATELIMIT_PREFIX`]
+              ? process.env[`${prefix}_RATELIMIT_PREFIX`]
+              : `${prefix}_limit_${env}`.toLowerCase(),
+            // whitelist/blacklist parsing inspired by `dotenv-parse-variables`
+            whitelist: process.env[`${prefix}_RATELIMIT_WHITELIST`]
+              ? process.env[`${prefix}_RATELIMIT_WHITELIST`]
+                  .split(',')
+                  .filter(str => str !== '')
+              : [],
+            blacklist: process.env[`${prefix}_RATELIMIT_BLACKLIST`]
+              ? process.env[`${prefix}_RATELIMIT_BLACKLIST`]
+                  .split(',')
+                  .filter(str => str !== '')
+              : []
+          },
     // <https://github.com/koajs/cors#corsoptions>
     cors: {},
     helmet: {
