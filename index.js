@@ -68,8 +68,8 @@ function sharedConfig(prefix) {
             'http://localhost:3000',
             'http://localhost:4000',
             'data:',
-            'http://*.cloudfront.net',
-            'https://*.cloudfront.net'
+            // 'http://*.cloudfront.net',
+            // 'https://*.cloudfront.net'
           ],
           fontSrc: [
             "'self'",
@@ -80,23 +80,23 @@ function sharedConfig(prefix) {
           imgSrc: [
             "'self'",
             'data:',
-            'http://*.cloudfront.net',
-            'https://*.cloudfront.net'
+            // 'http://*.cloudfront.net',
+            // 'https://*.cloudfront.net'
           ],
           styleSrc: [
             "'self'",
             "'unsafe-inline'",
             'https://cdn.jsdelivr.net',
-            'http://*.cloudfront.net',
-            'https://*.cloudfront.net'
+            // 'http://*.cloudfront.net',
+            // 'https://*.cloudfront.net'
           ],
           scriptSrc: [
             "'self'",
             "'unsafe-inline'",
             'https://polyfill.io',
             'http://localhost:35729',
-            'http://*.cloudfront.net',
-            'https://*.cloudfront.net'
+            // 'http://*.cloudfront.net',
+            // 'https://*.cloudfront.net'
           ]
         }
       },
