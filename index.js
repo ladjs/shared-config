@@ -63,41 +63,16 @@ function sharedConfig(prefix) {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          connectSrc: [
-            'ws://localhost:35729',
-            'http://localhost:3000',
-            'http://localhost:4000',
-            'data:'
-            // 'http://*.cloudfront.net',
-            // 'https://*.cloudfront.net'
-          ],
+          connectSrc: ['localhost', 'data:'],
           fontSrc: [
             "'self'",
             'data:',
-            'http://fonts.gstatic.com',
-            'http://cdn.jsdelivr.net'
-          ],
-          imgSrc: [
-            "'self'",
-            'data:'
-            // 'http://*.cloudfront.net',
-            // 'https://*.cloudfront.net'
-          ],
-          styleSrc: [
-            "'self'",
-            "'unsafe-inline'",
+            'https://fonts.gstatic.com',
             'https://cdn.jsdelivr.net'
-            // 'http://*.cloudfront.net',
-            // 'https://*.cloudfront.net'
           ],
-          scriptSrc: [
-            "'self'",
-            "'unsafe-inline'",
-            'https://polyfill.io',
-            'http://localhost:35729'
-            // 'http://*.cloudfront.net',
-            // 'https://*.cloudfront.net'
-          ]
+          imgSrc: ["'self'", 'data:'],
+          styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
+          scriptSrc: ["'self'", "'unsafe-inline'", 'localhost']
         }
       },
       expectCt: {
