@@ -64,15 +64,10 @@ function sharedConfig(prefix) {
         directives: {
           defaultSrc: ["'self'"],
           connectSrc: ['localhost', 'data:'],
-          fontSrc: [
-            "'self'",
-            'data:',
-            'https://fonts.gstatic.com',
-            'https://cdn.jsdelivr.net'
-          ],
+          fontSrc: ["'self'", 'data:', 'fonts.gstatic.com', 'cdn.jsdelivr.net'],
           imgSrc: ["'self'", 'data:'],
-          styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
-          scriptSrc: ["'self'", "'unsafe-inline'", 'localhost']
+          styleSrc: ["'self'", "'unsafe-inline'", 'cdn.jsdelivr.net'],
+          scriptSrc: ["'self'", "'unsafe-inline'", '*://localhost:*']
         }
       },
       expectCt: {
