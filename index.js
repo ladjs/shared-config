@@ -63,7 +63,7 @@ function sharedConfig(prefix) {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          connectSrc: ['localhost:*', 'data:'],
+          connectSrc: ['ws://localhost:*', 'localhost:*', 'data:'],
           fontSrc: ["'self'", 'data:', 'fonts.gstatic.com', 'cdn.jsdelivr.net'],
           imgSrc: ["'self'", 'data:'],
           styleSrc: ["'self'", "'unsafe-inline'", 'cdn.jsdelivr.net'],
