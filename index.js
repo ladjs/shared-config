@@ -67,7 +67,7 @@ function sharedConfig(prefix) {
           fontSrc: ["'self'", 'data:', 'fonts.gstatic.com', 'cdn.jsdelivr.net'],
           imgSrc: ["'self'", 'data:'],
           styleSrc: ["'self'", "'unsafe-inline'", 'cdn.jsdelivr.net'],
-          scriptSrc: ["'self'", "'unsafe-inline'", '*://localhost:*']
+          scriptSrc: ["'self'", "'unsafe-inline'", 'localhost:*']
         }
       },
       expectCt: {
