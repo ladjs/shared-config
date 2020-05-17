@@ -74,6 +74,15 @@ function sharedConfig(prefix) {
         enforce: true,
         // https://httpwg.org/http-extensions/expect-ct.html#maximum-max-age
         maxAge: 30 * 24 * 60 * 60 * 1000
+      },
+      // <https://hstspreload.org/>
+      // <https://helmetjs.github.io/docs/hsts/#preloading-hsts-in-chrome>
+      hsts: {
+        // must be at least 1 year to be approved
+        maxAge: 31536000,
+        // must be enabled to be approved
+        includeSubDomains: true,
+        preload: true
       }
     },
     // <https://github.com/ladjs/timeout>
