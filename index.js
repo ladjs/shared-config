@@ -62,8 +62,8 @@ function sharedConfig(prefix) {
     helmet: {
       contentSecurityPolicy: {
         directives: {
-          defaultSrc: ["'self'"],
-          connectSrc: ['ws://localhost:*', 'localhost:*', 'data:'],
+          defaultSrc: ["'self'", 'data:'],
+          connectSrc: ["'self'", 'ws://localhost:*', 'localhost:*', 'data:'],
           fontSrc: ["'self'", 'data:', 'fonts.gstatic.com', 'cdn.jsdelivr.net'],
           imgSrc: ["'self'", 'data:'],
           styleSrc: ["'self'", "'unsafe-inline'", 'cdn.jsdelivr.net'],
