@@ -64,9 +64,9 @@ function sharedConfig(prefix) {
         directives: {
           defaultSrc: ["'self'", 'data:'],
           connectSrc: ["'self'", 'data:'],
-          fontSrc: ["'self'", 'data:', 'fonts.gstatic.com', 'cdn.jsdelivr.net'],
+          fontSrc: ["'self'", 'data:'],
           imgSrc: ["'self'", 'data:'],
-          styleSrc: ["'self'", "'unsafe-inline'", 'cdn.jsdelivr.net'],
+          styleSrc: ["'self'", "'unsafe-inline'"],
           scriptSrc: ["'self'", "'unsafe-inline'"]
         }
       },
