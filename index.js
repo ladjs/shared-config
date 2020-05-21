@@ -22,6 +22,12 @@ function sharedConfig(prefix) {
     });
   }
 
+  const defaultSrc = [
+    "'self'",
+    'data:',
+    `*.${process.env[`${prefix}_HOST`]}:*`
+  ];
+
   const config = {
     port: process.env[`${prefix}_PORT`] || null,
     cabin: { capture: false },
@@ -62,12 +68,12 @@ function sharedConfig(prefix) {
     helmet: {
       contentSecurityPolicy: {
         directives: {
-          defaultSrc: ["'self'", 'data:'],
-          connectSrc: ["'self'", 'data:'],
-          fontSrc: ["'self'", 'data:'],
-          imgSrc: ["'self'", 'data:'],
-          styleSrc: ["'self'", "'unsafe-inline'"],
-          scriptSrc: ["'self'", "'unsafe-inline'"]
+          defaultSrc,
+          connectSrc: defaultSrc,
+          fontSrc: defaultSrc,
+          imgSrc: defaultSrc,
+          styleSrc: [...defaultSrc, "'unsafe-inline'"],
+          scriptSrc: [...defaultSrc, "'unsafe-inline'"]
         }
       },
       expectCt: {
