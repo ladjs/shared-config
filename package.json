@@ -21,7 +21,8 @@
   ],
   "dependencies": {
     "boolean": "^3.0.1",
-    "is-string-and-not-blank": "^0.0.2"
+    "is-string-and-not-blank": "^0.0.2",
+    "ms": "^2.1.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
