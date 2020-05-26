@@ -74,7 +74,8 @@ function sharedConfig(prefix) {
           fontSrc: defaultSrc,
           imgSrc: defaultSrc,
           styleSrc: [...defaultSrc, "'unsafe-inline'"],
-          scriptSrc: [...defaultSrc, "'unsafe-inline'"]
+          scriptSrc: [...defaultSrc, "'unsafe-inline'"],
+          reportUri: '/report'
         }
       },
       expectCt: {
