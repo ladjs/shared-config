@@ -29,10 +29,16 @@ function sharedConfig(prefix) {
     `*.${process.env[`${prefix}_HOST`]}:*`
   ];
 
+  const port = process.env[`${prefix}_PORT`] || null;
+  const protocol = process.env[`${prefix}_PROTOCOL`] || 'http';
+  const reportUri = `${protocol}://${process.env[`${prefix}_HOST`]}${
+    port && !['80', '443'].includes(port.toString()) ? `:${port}` : ''
+  }/report`;
+
   const config = {
-    port: process.env[`${prefix}_PORT`] || null,
+    port,
     cabin: { capture: false },
-    protocol: process.env[`${prefix}_PROTOCOL`] || 'http',
+    protocol,
     ...(ssl ? { ssl } : {}),
     routes: false,
     logger: console,
@@ -75,13 +81,14 @@ function sharedConfig(prefix) {
           imgSrc: defaultSrc,
           styleSrc: [...defaultSrc, "'unsafe-inline'"],
           scriptSrc: [...defaultSrc, "'unsafe-inline'"],
-          reportUri: '/report'
+          reportUri
         }
       },
       expectCt: {
         enforce: true,
         // https://httpwg.org/http-extensions/expect-ct.html#maximum-max-age
-        maxAge: ms('30d') / 1000
+        maxAge: ms('30d') / 1000,
+        reportUri
       },
       // <https://hstspreload.org/>
       // <https://helmetjs.github.io/docs/hsts/#preloading-hsts-in-chrome>
@@ -91,6 +98,9 @@ function sharedConfig(prefix) {
         // must be enabled to be approved
         includeSubDomains: true,
         preload: true
+      },
+      xssFilter: {
+        reportUri
       }
     },
     // <https://github.com/ladjs/timeout>
