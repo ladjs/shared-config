@@ -31,9 +31,7 @@ function sharedConfig(prefix) {
 
   const port = process.env[`${prefix}_PORT`] || null;
   const protocol = process.env[`${prefix}_PROTOCOL`] || 'http';
-  const reportUri = `${protocol}://${process.env[`${prefix}_HOST`]}${
-    port && !['80', '443'].includes(port.toString()) ? `:${port}` : ''
-  }/report`;
+  const reportUri = `${process.env[`${prefix}_URL`]}/report`;
 
   const config = {
     port,
