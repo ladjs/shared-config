@@ -88,17 +88,6 @@ function sharedConfig(prefix) {
         maxAge: ms('30d') / 1000,
         reportUri
       },
-      // <https://helmetjs.github.io/docs/feature-policy/>
-      // <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy#Directives>
-      featurePolicy: {
-        features: {
-          documentDomain: ["'self'"],
-          documentWrite: ["'self'"],
-          fullscreen: ["'self'"],
-          syncScript: ["'none'"],
-          syncXhr: ["'none'"]
-        }
-      },
       // <https://hstspreload.org/>
       // <https://helmetjs.github.io/docs/hsts/#preloading-hsts-in-chrome>
       hsts: {
