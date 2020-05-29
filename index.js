@@ -23,11 +23,13 @@ function sharedConfig(prefix) {
     });
   }
 
+  /*
   const defaultSrc = [
     "'self'",
     'data:',
     `*.${process.env[`${prefix}_HOST`]}:*`
   ];
+  */
 
   const port = process.env[`${prefix}_PORT`] || null;
   const protocol = process.env[`${prefix}_PROTOCOL`] || 'http';
@@ -71,6 +73,7 @@ function sharedConfig(prefix) {
     // <https://github.com/koajs/cors#corsoptions>
     cors: {},
     helmet: {
+      /*
       contentSecurityPolicy: {
         directives: {
           defaultSrc,
@@ -82,6 +85,7 @@ function sharedConfig(prefix) {
           reportUri
         }
       },
+      */
       expectCt: {
         enforce: true,
         // https://httpwg.org/http-extensions/expect-ct.html#maximum-max-age
