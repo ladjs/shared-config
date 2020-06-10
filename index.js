@@ -1,7 +1,6 @@
 const fs = require('fs');
 
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
 const { boolean } = require('boolean');
 
 const env = process.env.NODE_ENV || 'development';
@@ -23,15 +22,8 @@ function sharedConfig(prefix) {
     });
   }
 
-  const defaultSrc = [
-    "'self'",
-    'data:',
-    `*.${process.env[`${prefix}_HOST`]}:*`
-  ];
-
   const port = process.env[`${prefix}_PORT`] || null;
   const protocol = process.env[`${prefix}_PROTOCOL`] || 'http';
-  const reportUri = `${process.env[`${prefix}_URL`]}/report`;
 
   const config = {
     port,
@@ -68,44 +60,6 @@ function sharedConfig(prefix) {
                   .filter(str => str !== '')
               : []
           },
-    // <https://github.com/koajs/cors#corsoptions>
-    cors: {},
-    helmet: {
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc,
-          connectSrc: defaultSrc,
-          fontSrc: defaultSrc,
-          imgSrc: defaultSrc,
-          styleSrc: [...defaultSrc, "'unsafe-inline'"],
-          scriptSrc: [...defaultSrc, "'unsafe-inline'"],
-          reportUri
-        }
-      },
-      expectCt: {
-        enforce: true,
-        // https://httpwg.org/http-extensions/expect-ct.html#maximum-max-age
-        maxAge: ms('30d') / 1000,
-        reportUri
-      },
-      // <https://hstspreload.org/>
-      // <https://helmetjs.github.io/docs/hsts/#preloading-hsts-in-chrome>
-      hsts: {
-        // must be at least 1 year to be approved
-        maxAge: ms('1y') / 1000,
-        // must be enabled to be approved
-        includeSubDomains: true,
-        preload: true
-      },
-      // <https://helmetjs.github.io/docs/referrer-policy>
-      // <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy>
-      referrerPolicy: {
-        policy: 'same-origin'
-      },
-      xssFilter: {
-        reportUri
-      }
-    },
     // <https://github.com/ladjs/timeout>
     timeout: {
       ms: process.env[`${prefix}_TIMEOUT_MS`]
