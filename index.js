@@ -110,7 +110,9 @@ function sharedConfig(prefix) {
           useUnifiedTopology: true
         }
       }
-    }
+    },
+    // <https://github.com/koajs/cors#corsoptions>
+    cors: {}
   };
   return config;
 }
