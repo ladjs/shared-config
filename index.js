@@ -112,7 +112,11 @@ function sharedConfig(prefix) {
       }
     },
     // <https://github.com/koajs/cors#corsoptions>
-    cors: {}
+    cors: {},
+    // https://github.com/cusspvz/proxywrap
+    // this gets passed to @ladjs/web and @ladjs/api as a boolean
+    // which is then used to determine if this package should be used
+    proxyProtocol: boolean(process.env[`${prefix}_PROXY_PROTOCOL`])
   };
   return config;
 }
