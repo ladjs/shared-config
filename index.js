@@ -10,12 +10,12 @@ function sharedConfig(prefix) {
   let ssl = false;
 
   const keys = ['KEY', 'CERT', 'CA'];
-  const validKeys = keys.filter(key =>
+  const validKeys = keys.filter((key) =>
     isSANB(process.env[`${prefix}_SSL_${key}_PATH`])
   );
   if (validKeys.length > 0) {
     ssl = { allowHTTP1: true };
-    validKeys.forEach(key => {
+    validKeys.forEach((key) => {
       ssl[key.toLowerCase()] = fs.readFileSync(
         process.env[`${prefix}_SSL_${key}_PATH`]
       );
@@ -39,12 +39,12 @@ function sharedConfig(prefix) {
         ? false
         : {
             duration: process.env[`${prefix}_RATELIMIT_DURATION`]
-              ? parseInt(process.env[`${prefix}_RATELIMIT_DURATION`], 10)
+              ? Number.parseInt(process.env[`${prefix}_RATELIMIT_DURATION`], 10)
               : 60000,
             max: process.env[`${prefix}_RATELIMIT_MAX`]
-              ? parseInt(process.env[`${prefix}_RATELIMIT_MAX`], 10)
+              ? Number.parseInt(process.env[`${prefix}_RATELIMIT_MAX`], 10)
               : 100,
-            id: ctx => ctx.ip,
+            id: (ctx) => ctx.ip,
             prefix: process.env[`${prefix}_RATELIMIT_PREFIX`]
               ? process.env[`${prefix}_RATELIMIT_PREFIX`]
               : `${prefix}_limit_${env}`.toLowerCase(),
@@ -52,20 +52,20 @@ function sharedConfig(prefix) {
             whitelist: process.env[`${prefix}_RATELIMIT_WHITELIST`]
               ? process.env[`${prefix}_RATELIMIT_WHITELIST`]
                   .split(',')
-                  .filter(str => str !== '')
+                  .filter((string) => string !== '')
               : [],
             blacklist: process.env[`${prefix}_RATELIMIT_BLACKLIST`]
               ? process.env[`${prefix}_RATELIMIT_BLACKLIST`]
                   .split(',')
-                  .filter(str => str !== '')
+                  .filter((string) => string !== '')
               : []
           },
     // <https://github.com/ladjs/timeout>
     timeout: {
       ms: process.env[`${prefix}_TIMEOUT_MS`]
-        ? parseInt(process.env[`${prefix}_TIMEOUT_MS`], 10)
+        ? Number.parseInt(process.env[`${prefix}_TIMEOUT_MS`], 10)
         : 30000,
-      message: ctx =>
+      message: (ctx) =>
         ctx.request.t(
           'Your request has timed out and we have been alerted of this issue. Please try again or contact us.'
         )
@@ -81,7 +81,7 @@ function sharedConfig(prefix) {
     // <https://github.com/luin/ioredis/blob/master/API.md#new-redisport-host-options>
     redis: {
       port: process.env[`${prefix}_REDIS_PORT`]
-        ? parseInt(process.env[`${prefix}_REDIS_PORT`], 10)
+        ? Number.parseInt(process.env[`${prefix}_REDIS_PORT`], 10)
         : 6379,
       host: process.env[`${prefix}_REDIS_HOST`]
         ? process.env[`${prefix}_REDIS_HOST`]
@@ -101,10 +101,16 @@ function sharedConfig(prefix) {
         uri: process.env[`${prefix}_MONGO_URI`],
         options: {
           reconnectTries: process.env[`${prefix}_MONGO_RECONNECT_TRIES`]
-            ? parseInt(process.env[`${prefix}_MONGO_RECONNECT_TRIES`], 10)
+            ? Number.parseInt(
+                process.env[`${prefix}_MONGO_RECONNECT_TRIES`],
+                10
+              )
             : Number.MAX_VALUE,
           reconnectInterval: process.env[`${prefix}_MONGO_RECONNECT_INTERVAL`]
-            ? parseInt(process.env[`${prefix}_MONGO_RECONNECT_INTERVAL`], 10)
+            ? Number.parseInt(
+                process.env[`${prefix}_MONGO_RECONNECT_INTERVAL`],
+                10
+              )
             : 1000,
           useNewUrlParser: true,
           useUnifiedTopology: true,

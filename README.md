@@ -54,7 +54,7 @@ See Lad's implementation for API or Web Server:
 [MIT](LICENSE) © [Nick Baugh](http://niftylettuce.com/)
 
 
-## 
+##
 
 [npm]: https://www.npmjs.com/
 
