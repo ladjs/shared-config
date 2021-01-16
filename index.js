@@ -107,7 +107,8 @@ function sharedConfig(prefix) {
             ? parseInt(process.env[`${prefix}_MONGO_RECONNECT_INTERVAL`], 10)
             : 1000,
           useNewUrlParser: true,
-          useUnifiedTopology: true
+          useUnifiedTopology: true,
+          useFindAndModify: false
         }
       }
     },
