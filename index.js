@@ -22,11 +22,19 @@ function sharedConfig(prefix) {
     });
   }
 
-  const port = process.env[`${prefix}_PORT`] || null;
+  const port = process.env[`${prefix}_PORT`] || 0;
+  const serverHost = process.env[`${prefix}_SERVER_HOST`] || '0.0.0.0';
   const protocol = process.env[`${prefix}_PROTOCOL`] || 'http';
 
   const config = {
+    // this is used as defaults for `app.listen(port, serverHost)`
     port,
+    // by listening on '0.0.0.0' by default we avoid IPv6 issues
+    // <https://stackoverflow.com/questions/29411551/express-js-req-ip-is-returning-ffff127-0-0-1>
+    // <https://nodejs.org/api/net.html#net_server_listen_port_host_backlog_callback
+    // <https://github.com/koajs/koa/issues/599>
+    // <https://stackoverflow.com/a/33957043>
+    serverHost,
     cabin: { capture: false },
     protocol,
     ...(ssl ? { ssl } : {}),
