@@ -57,12 +57,12 @@ function sharedConfig(prefix) {
               ? process.env[`${prefix}_RATELIMIT_PREFIX`]
               : `${prefix}_limit_${env}`.toLowerCase(),
             // whitelist/blacklist parsing inspired by `dotenv-parse-variables`
-            whitelist: process.env[`${prefix}_RATELIMIT_WHITELIST`]
+            allowlist: process.env[`${prefix}_RATELIMIT_WHITELIST`]
               ? process.env[`${prefix}_RATELIMIT_WHITELIST`]
                   .split(',')
                   .filter((string) => string !== '')
               : [],
-            blacklist: process.env[`${prefix}_RATELIMIT_BLACKLIST`]
+            blocklist: process.env[`${prefix}_RATELIMIT_BLACKLIST`]
               ? process.env[`${prefix}_RATELIMIT_BLACKLIST`]
                   .split(',')
                   .filter((string) => string !== '')
