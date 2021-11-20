@@ -53,16 +53,13 @@
   "license": "MIT",
   "lint-staged": {
     "*.js": [
-      "xo --fix",
-      "git add"
+      "xo --fix"
     ],
     "*.md": [
-      "remark . -qfo",
-      "git add"
+      "remark . -qfo"
     ],
     "package.json": [
-      "fixpack",
-      "git add"
+      "fixpack"
     ]
   },
   "main": "index.js",
