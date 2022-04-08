@@ -20,7 +20,7 @@
     "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)"
   ],
   "dependencies": {
-    "boolean": "^3.0.2",
+    "boolean": "^3.2.0",
     "is-string-and-not-blank": "^0.0.2"
   },
   "devDependencies": {
