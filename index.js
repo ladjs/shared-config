@@ -1,11 +1,10 @@
 const fs = require('fs');
+const process = require('process');
 
 const isSANB = require('is-string-and-not-blank');
 const { boolean } = require('boolean');
 
-const env = process.env.NODE_ENV || 'development';
-
-function sharedConfig(prefix) {
+function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
   prefix = prefix.toUpperCase();
   let ssl = false;
 
@@ -15,11 +14,11 @@ function sharedConfig(prefix) {
   );
   if (validKeys.length > 0) {
     ssl = { allowHTTP1: true };
-    validKeys.forEach((key) => {
+    for (const key of validKeys) {
       ssl[key.toLowerCase()] = fs.readFileSync(
         process.env[`${prefix}_SSL_${key}_PATH`]
       );
-    });
+    }
   }
 
   const port = process.env[`${prefix}_PORT`] || 0;
@@ -48,7 +47,7 @@ function sharedConfig(prefix) {
         : {
             duration: process.env[`${prefix}_RATELIMIT_DURATION`]
               ? Number.parseInt(process.env[`${prefix}_RATELIMIT_DURATION`], 10)
-              : 60000,
+              : 60_000,
             max: process.env[`${prefix}_RATELIMIT_MAX`]
               ? Number.parseInt(process.env[`${prefix}_RATELIMIT_MAX`], 10)
               : 100,
@@ -72,7 +71,7 @@ function sharedConfig(prefix) {
     timeout: {
       ms: process.env[`${prefix}_TIMEOUT_MS`]
         ? Number.parseInt(process.env[`${prefix}_TIMEOUT_MS`], 10)
-        : 30000,
+        : 30_000,
       message: (ctx) =>
         ctx.request.t(
           'Your request has timed out and we have been alerted of this issue. Please try again or contact us.'
