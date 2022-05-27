@@ -25,7 +25,7 @@
     "is-string-and-not-blank": "^0.0.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.0.0",
+    "@commitlint/cli": "^17.0.1",
     "@commitlint/config-conventional": "^17.0.0",
     "ava": "^4.2.0",
     "codecov": "^3.8.2",
