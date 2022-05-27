@@ -4,6 +4,9 @@ const process = require('process');
 const isSANB = require('is-string-and-not-blank');
 const { boolean } = require('boolean');
 
+const TIMEOUT_MESSAGE =
+  'Your request has timed out and we have been alerted of this issue. Please try again or contact us.';
+
 function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
   prefix = prefix.toUpperCase();
   let ssl = false;
@@ -73,9 +76,9 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
         ? Number.parseInt(process.env[`${prefix}_TIMEOUT_MS`], 10)
         : 30_000,
       message: (ctx) =>
-        ctx.request.t(
-          'Your request has timed out and we have been alerted of this issue. Please try again or contact us.'
-        )
+        typeof ctx.request.t === 'function'
+          ? ctx.request.t(TIMEOUT_MESSAGE)
+          : TIMEOUT_MESSAGE
     },
     auth: false,
     // these are hooks that can get run before/after configuration
