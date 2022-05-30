@@ -7,6 +7,7 @@ const { boolean } = require('boolean');
 const TIMEOUT_MESSAGE =
   'Your request has timed out and we have been alerted of this issue. Please try again or contact us.';
 
+// eslint-disable-next-line complexity
 function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
   prefix = prefix.toUpperCase();
   let ssl = false;
@@ -101,7 +102,30 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
         : null,
       showFriendlyErrorStack: boolean(
         process.env[`${prefix}_REDIS_SHOW_FRIENDLY_ERROR_STACK`]
-      )
+      ),
+      //
+      // NOTE: we override default values in ioredis for `maxRetriesPerRequest`
+      //       and also `maxLoadingRetryTime`, because otherwise the default values
+      //       of 20 * 10000 would cause 200s retry time, which is more than the
+      //       HTTP default timeout per request of 30s as per above, and we use
+      //       sensible default values of 3 * 3000 = 9s max redis retry time
+      //
+      // default in ioredis is 20
+      maxRetriesPerRequest: process.env[
+        `${prefix}_REDIS_MAX_RETRIES_PER_REQUEST`
+      ]
+        ? Number.parseInt(
+            process.env[`${prefix}_REDIS_MAX_RETRIES_PER_REQUEST`],
+            10
+          )
+        : 3,
+      // default in ioredis is 10000 (10s)
+      maxLoadingRetryTime: process.env[`${prefix}_REDIS_MAX_LOADING_RETRY_TIME`]
+        ? Number.parseInt(
+            process.env[`${prefix}_REDIS_MAX_LOADING_RETRY_TIME`],
+            10
+          )
+        : 3000
     },
     redisMonitor: boolean(process.env[`${prefix}_REDIS_MONITOR`]),
     // mongoose/mongo configuration object (passed to @ladjs/mongoose)
