@@ -38,11 +38,9 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
     // <https://github.com/koajs/koa/issues/599>
     // <https://stackoverflow.com/a/33957043>
     serverHost,
-    cabin: { capture: false },
     protocol,
     ...(ssl ? { ssl } : {}),
     routes: false,
-    logger: console,
     passport: false,
     i18n: {},
     rateLimit:
