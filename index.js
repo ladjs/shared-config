@@ -43,6 +43,7 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
     ...(ssl ? { ssl } : {}),
     routes: false,
     logger: console,
+    passport: false,
     i18n: {},
     rateLimit:
       env === 'development'
