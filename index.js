@@ -1,8 +1,12 @@
 const fs = require('fs');
 const process = require('process');
+const util = require('util');
 
+const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const { boolean } = require('boolean');
+
+const RATE_LIMIT_EXCEEDED = 'Rate limit exceeded, retry in %s.';
 
 const TIMEOUT_MESSAGE =
   'Your request has timed out and we have been alerted of this issue. Please try again or contact us.';
@@ -47,12 +51,25 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
       env === 'development'
         ? false
         : {
+            errorMessage(exp, ctx) {
+              const fn =
+                typeof ctx.request.t === 'function'
+                  ? ctx.request.t
+                  : util.format;
+              return fn(
+                RATE_LIMIT_EXCEEDED,
+                dayjs()
+                  .add(exp, 'ms')
+                  .locale(ctx.state.locale || 'en')
+                  .fromNow(true)
+              );
+            },
             duration: process.env[`${prefix}_RATELIMIT_DURATION`]
               ? Number.parseInt(process.env[`${prefix}_RATELIMIT_DURATION`], 10)
               : 60_000,
             max: process.env[`${prefix}_RATELIMIT_MAX`]
               ? Number.parseInt(process.env[`${prefix}_RATELIMIT_MAX`], 10)
-              : 100,
+              : 1000,
             id: (ctx) => ctx.ip,
             prefix: process.env[`${prefix}_RATELIMIT_PREFIX`]
               ? process.env[`${prefix}_RATELIMIT_PREFIX`]
