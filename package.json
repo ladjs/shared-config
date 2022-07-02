@@ -1,7 +1,7 @@
 {
   "name": "@ladjs/shared-config",
   "description": "Shared configuration for Lad's API and Web servers",
-  "version": "7.0.3",
+  "version": "8.0.0",
   "author": "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)",
   "bugs": {
     "url": "https://github.com/ladjs/shared-config/issues",
