@@ -11,7 +11,6 @@ const RATE_LIMIT_EXCEEDED = 'Rate limit exceeded, retry in %s.';
 const TIMEOUT_MESSAGE =
   'Your request has timed out and we have been alerted of this issue. Please try again or contact us.';
 
-// eslint-disable-next-line complexity
 function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
   prefix = prefix.toUpperCase();
   let ssl = false;
@@ -148,13 +147,7 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
       debug: boolean(process.env[`${prefix}_MONGOOSE_DEBUG`]),
       mongo: {
         uri: process.env[`${prefix}_MONGO_URI`]
-      },
-      reconnectTries: process.env[`${prefix}_MONGO_RECONNECT_TRIES`]
-        ? Number.parseInt(process.env[`${prefix}_MONGO_RECONNECT_TRIES`], 10)
-        : Number.MAX_VALUE,
-      reconnectInterval: process.env[`${prefix}_MONGO_RECONNECT_INTERVAL`]
-        ? Number.parseInt(process.env[`${prefix}_MONGO_RECONNECT_INTERVAL`], 10)
-        : 1000
+      }
     },
     // <https://github.com/koajs/cors#corsoptions>
     cors: {}
