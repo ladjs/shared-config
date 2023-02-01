@@ -142,13 +142,6 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
         : 3000
     },
     redisMonitor: boolean(process.env[`${prefix}_REDIS_MONITOR`]),
-    // mongoose/mongo configuration object (passed to @ladjs/mongoose)
-    mongoose: {
-      debug: boolean(process.env[`${prefix}_MONGOOSE_DEBUG`]),
-      mongo: {
-        uri: process.env[`${prefix}_MONGO_URI`]
-      }
-    },
     // <https://github.com/koajs/cors#corsoptions>
     cors: {}
   };
