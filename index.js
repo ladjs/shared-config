@@ -29,7 +29,7 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
   }
 
   const port = process.env[`${prefix}_PORT`] || 0;
-  const serverHost = process.env[`${prefix}_SERVER_HOST`] || '0.0.0.0';
+  const serverHost = process.env[`${prefix}_SERVER_HOST`] || '::';
   const protocol = process.env[`${prefix}_PROTOCOL`] || 'http';
 
   const config = {
