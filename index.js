@@ -11,6 +11,7 @@ const RATE_LIMIT_EXCEEDED = 'Rate limit exceeded, retry in %s.';
 const TIMEOUT_MESSAGE =
   'Your request has timed out and we have been alerted of this issue. Please try again or contact us.';
 
+// eslint-disable-next-line complexity
 function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
   prefix = prefix.toUpperCase();
   let ssl = false;
@@ -105,6 +106,9 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
     // ioredis configuration object
     // <https://github.com/luin/ioredis/blob/master/API.md#new-redisport-host-options>
     redis: {
+      username: process.env[`${prefix}_REDIS_USERNAME`]
+        ? process.env[`${prefix}_REDIS_USERNAME`]
+        : null,
       port: process.env[`${prefix}_REDIS_PORT`]
         ? Number.parseInt(process.env[`${prefix}_REDIS_PORT`], 10)
         : 6379,
