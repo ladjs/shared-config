@@ -149,6 +149,10 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
     // <https://github.com/koajs/cors#corsoptions>
     cors: {}
   };
+
+  // <https://stackoverflow.com/a/66810848>
+  if (boolean(process.env[`${prefix}_REDIS_TLS`])) config.redis.tls = {};
+
   return config;
 }
 
