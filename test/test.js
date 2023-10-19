@@ -1,6 +1,5 @@
-const process = require('process');
+const process = require('node:process');
 const test = require('ava');
-
 const sharedConfig = require('..');
 
 test('returns an object', (t) => {

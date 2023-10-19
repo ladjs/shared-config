@@ -1,9 +1,9 @@
-const fs = require('fs');
-const process = require('process');
-const util = require('util');
-
+const fs = require('node:fs');
+const process = require('node:process');
+const util = require('node:util');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
+const semver = require('semver');
 const { boolean } = require('boolean');
 
 const RATE_LIMIT_EXCEEDED = 'Rate limit exceeded, retry in %s.';
@@ -16,16 +16,26 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
   prefix = prefix.toUpperCase();
   let ssl = false;
 
-  const keys = ['KEY', 'CERT', 'CA'];
+  const keys = ['KEY', 'CERT', 'CA', 'DHPARAM'];
   const validKeys = keys.filter((key) =>
     isSANB(process.env[`${prefix}_SSL_${key}_PATH`])
   );
   if (validKeys.length > 0) {
     ssl = { allowHTTP1: true };
+    // node v18.16.0+ supports "auto" property for dhparam
+    // for perfect forward secrecy (a custom dhparam could be added for ECDHE")
+    if (semver.gte(process.version, 'v18.16.0')) ssl.dhparam = 'auto'; // will be overridden if custom passed in loop below
     for (const key of validKeys) {
-      ssl[key.toLowerCase()] = fs.readFileSync(
-        process.env[`${prefix}_SSL_${key}_PATH`]
-      );
+      if (
+        key === 'DHPARAM' &&
+        process.env[`${prefix}_SSL_${key}_PATH`].toLowerCase() === 'auto'
+      ) {
+        ssl.dhparam = 'auto';
+      } else {
+        ssl[key.toLowerCase()] = fs.readFileSync(
+          process.env[`${prefix}_SSL_${key}_PATH`]
+        );
+      }
     }
   }
 
@@ -71,9 +81,9 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
               ? Number.parseInt(process.env[`${prefix}_RATELIMIT_MAX`], 10)
               : 1000,
             id: (ctx) => ctx.ip,
-            prefix: process.env[`${prefix}_RATELIMIT_PREFIX`]
-              ? process.env[`${prefix}_RATELIMIT_PREFIX`]
-              : `${prefix}_limit_${env}`.toLowerCase(),
+            prefix:
+              process.env[`${prefix}_RATELIMIT_PREFIX`] ||
+              `${prefix}_limit_${env}`.toLowerCase(),
             // whitelist/blacklist parsing inspired by `dotenv-parse-variables`
             allowlist: process.env[`${prefix}_RATELIMIT_WHITELIST`]
               ? process.env[`${prefix}_RATELIMIT_WHITELIST`]
@@ -106,18 +116,12 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
     // ioredis configuration object
     // <https://github.com/luin/ioredis/blob/master/API.md#new-redisport-host-options>
     redis: {
-      username: process.env[`${prefix}_REDIS_USERNAME`]
-        ? process.env[`${prefix}_REDIS_USERNAME`]
-        : null,
+      username: process.env[`${prefix}_REDIS_USERNAME`] || null,
       port: process.env[`${prefix}_REDIS_PORT`]
         ? Number.parseInt(process.env[`${prefix}_REDIS_PORT`], 10)
         : 6379,
-      host: process.env[`${prefix}_REDIS_HOST`]
-        ? process.env[`${prefix}_REDIS_HOST`]
-        : 'localhost',
-      password: process.env[`${prefix}_REDIS_PASSWORD`]
-        ? process.env[`${prefix}_REDIS_PASSWORD`]
-        : null,
+      host: process.env[`${prefix}_REDIS_HOST`] || 'localhost',
+      password: process.env[`${prefix}_REDIS_PASSWORD`] || null,
       showFriendlyErrorStack: boolean(
         process.env[`${prefix}_REDIS_SHOW_FRIENDLY_ERROR_STACK`]
       ),
