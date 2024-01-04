@@ -16,26 +16,17 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
   prefix = prefix.toUpperCase();
   let ssl = false;
 
-  const keys = ['KEY', 'CERT', 'CA', 'DHPARAM'];
+  const keys = ['KEY', 'CERT', 'CA'];
   const validKeys = keys.filter((key) =>
     isSANB(process.env[`${prefix}_SSL_${key}_PATH`])
   );
   if (validKeys.length > 0) {
     ssl = { allowHTTP1: true };
-    // node v18.16.0+ supports "auto" property for dhparam
-    // for perfect forward secrecy (a custom dhparam could be added for ECDHE")
-    if (semver.gte(process.version, 'v18.16.0')) ssl.dhparam = 'auto'; // will be overridden if custom passed in loop below
+    if (semver.gte(process.version, 'v18.16.0')) ssl.ecdhCurve = 'auto';
     for (const key of validKeys) {
-      if (
-        key === 'DHPARAM' &&
-        process.env[`${prefix}_SSL_${key}_PATH`].toLowerCase() === 'auto'
-      ) {
-        ssl.dhparam = 'auto';
-      } else {
-        ssl[key.toLowerCase()] = fs.readFileSync(
-          process.env[`${prefix}_SSL_${key}_PATH`]
-        );
-      }
+      ssl[key.toLowerCase()] = fs.readFileSync(
+        process.env[`${prefix}_SSL_${key}_PATH`]
+      );
     }
   }
 
