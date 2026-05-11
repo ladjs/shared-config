@@ -11,6 +11,80 @@ const RATE_LIMIT_EXCEEDED = 'Rate limit exceeded, retry in %s.';
 const TIMEOUT_MESSAGE =
   'Your request has timed out and we have been alerted of this issue. Please try again or contact us.';
 
+//
+// Hardened TLS cipher suites (only AEAD ciphers with forward secrecy).
+//
+// Ordered by security level per NCSC/internet.nl guidelines:
+// "Good" = ECDHE + AEAD, "Sufficient" = DHE + AEAD
+//
+// Excludes:
+// - RSA key exchange (no forward secrecy)
+// - CBC mode ciphers
+// - ARIA ciphers
+// - CCM/CCM8 ciphers
+// - DSS authentication
+//
+// TLS 1.3 ciphers are always enabled and not affected by this setting.
+//
+const TLS_CIPHERS = [
+  'ECDHE-ECDSA-AES256-GCM-SHA384',
+  'ECDHE-RSA-AES256-GCM-SHA384',
+  'ECDHE-ECDSA-AES128-GCM-SHA256',
+  'ECDHE-RSA-AES128-GCM-SHA256',
+  'ECDHE-ECDSA-CHACHA20-POLY1305',
+  'ECDHE-RSA-CHACHA20-POLY1305',
+  'DHE-RSA-AES256-GCM-SHA384',
+  'DHE-RSA-AES128-GCM-SHA256',
+  'DHE-RSA-CHACHA20-POLY1305'
+].join(':');
+
+//
+// Compat cipher list: Adds CBC ciphers with forward secrecy for
+// backward compatibility with older clients (e.g. TLS 1.0/1.1).
+// Still excludes RSA key exchange (no forward secrecy).
+//
+const TLS_COMPAT_CIPHERS = [
+  // AEAD ciphers first (preferred)
+  'ECDHE-ECDSA-AES256-GCM-SHA384',
+  'ECDHE-RSA-AES256-GCM-SHA384',
+  'ECDHE-ECDSA-AES128-GCM-SHA256',
+  'ECDHE-RSA-AES128-GCM-SHA256',
+  'ECDHE-ECDSA-CHACHA20-POLY1305',
+  'ECDHE-RSA-CHACHA20-POLY1305',
+  'DHE-RSA-AES256-GCM-SHA384',
+  'DHE-RSA-AES128-GCM-SHA256',
+  'DHE-RSA-CHACHA20-POLY1305',
+  // CBC ciphers with forward secrecy (for TLS 1.0/1.1 compat)
+  'ECDHE-ECDSA-AES256-SHA384',
+  'ECDHE-RSA-AES256-SHA384',
+  'ECDHE-ECDSA-AES128-SHA256',
+  'ECDHE-RSA-AES128-SHA256',
+  'ECDHE-ECDSA-AES256-SHA',
+  'ECDHE-RSA-AES256-SHA',
+  'ECDHE-ECDSA-AES128-SHA',
+  'ECDHE-RSA-AES128-SHA',
+  'DHE-RSA-AES256-SHA256',
+  'DHE-RSA-AES128-SHA256',
+  'DHE-RSA-AES256-SHA',
+  'DHE-RSA-AES128-SHA'
+].join(':');
+
+//
+// Signature algorithms for TLS 1.2 key exchange.
+// Excludes SHA-1 and SHA-224 (outdated per internet.nl/NCSC guidelines).
+//
+const TLS_SIGALGS = [
+  'ecdsa_secp256r1_sha256',
+  'ecdsa_secp384r1_sha384',
+  'ecdsa_secp521r1_sha512',
+  'rsa_pss_rsae_sha256',
+  'rsa_pss_rsae_sha384',
+  'rsa_pss_rsae_sha512',
+  'rsa_pkcs1_sha256',
+  'rsa_pkcs1_sha384',
+  'rsa_pkcs1_sha512'
+].join(':');
+
 // eslint-disable-next-line complexity
 function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
   prefix = prefix.toUpperCase();
@@ -23,6 +97,18 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
   if (validKeys.length > 0) {
     ssl = { allowHTTP1: true };
     if (semver.gte(process.version, 'v18.16.0')) ssl.ecdhCurve = 'auto';
+
+    //
+    // Hardened TLS options:
+    // - Enforce server cipher suite preference order
+    // - Only allow AEAD ciphers with forward secrecy
+    // - Exclude weak signature algorithms (SHA-1, SHA-224)
+    //
+    ssl.honorCipherOrder = true;
+    ssl.ciphers = TLS_CIPHERS;
+    ssl.sigalgs = TLS_SIGALGS;
+    ssl.minVersion = 'TLSv1.2';
+
     for (const key of validKeys) {
       ssl[key.toLowerCase()] = fs.readFileSync(
         process.env[`${prefix}_SSL_${key}_PATH`]
@@ -152,3 +238,6 @@ function sharedConfig(prefix, env = process.env.NODE_ENV || 'development') {
 }
 
 module.exports = sharedConfig;
+module.exports.TLS_CIPHERS = TLS_CIPHERS;
+module.exports.TLS_COMPAT_CIPHERS = TLS_COMPAT_CIPHERS;
+module.exports.TLS_SIGALGS = TLS_SIGALGS;
