@@ -43,28 +43,54 @@ const TLS_CIPHERS = [
 // backward compatibility with older clients (e.g. TLS 1.0/1.1).
 // Still excludes RSA key exchange (no forward secrecy).
 //
+// Modeled after WildDuck and Haraka cipher lists, but
+// with RSA key exchange removed (no forward secrecy).
+//
+// Cipher ordering:
+//   1. AEAD ciphers with ECDHE (best)
+//   2. AEAD ciphers with DHE (good)
+//   3. CBC ciphers with ECDHE + SHA-256/SHA-384 (TLS 1.2 CBC)
+//   4. CBC ciphers with DHE + SHA-256 (TLS 1.2 CBC)
+//   5. CBC ciphers with ECDHE + SHA-1 (TLS 1.0/1.1 compat)
+//   6. CBC ciphers with DHE + SHA-1 (TLS 1.0/1.1 compat)
+//
+// NOTE: RSA key exchange is still excluded (no forward secrecy).
+// NOTE: 3DES is excluded (too weak, CVE-2016-2183 Sweet32).
+// NOTE: ARIA is excluded (internet.nl marks as "phase out").
+//
 const TLS_COMPAT_CIPHERS = [
-  // AEAD ciphers first (preferred)
+  // === AEAD ciphers with forward secrecy (preferred) ===
+  // ECDHE + AES-GCM
   'ECDHE-ECDSA-AES256-GCM-SHA384',
   'ECDHE-RSA-AES256-GCM-SHA384',
   'ECDHE-ECDSA-AES128-GCM-SHA256',
   'ECDHE-RSA-AES128-GCM-SHA256',
+  // ECDHE + CHACHA20-POLY1305
   'ECDHE-ECDSA-CHACHA20-POLY1305',
   'ECDHE-RSA-CHACHA20-POLY1305',
+  // DHE + AES-GCM
   'DHE-RSA-AES256-GCM-SHA384',
   'DHE-RSA-AES128-GCM-SHA256',
+  // DHE + CHACHA20-POLY1305
   'DHE-RSA-CHACHA20-POLY1305',
-  // CBC ciphers with forward secrecy (for TLS 1.0/1.1 compat)
+
+  // === CBC ciphers with forward secrecy + SHA-256/SHA-384 MACs ===
+  // (TLS 1.2 CBC - for clients that support TLS 1.2 but not AEAD)
   'ECDHE-ECDSA-AES256-SHA384',
   'ECDHE-RSA-AES256-SHA384',
   'ECDHE-ECDSA-AES128-SHA256',
   'ECDHE-RSA-AES128-SHA256',
+  'DHE-RSA-AES256-SHA256',
+  'DHE-RSA-AES128-SHA256',
+
+  // === CBC ciphers with forward secrecy + SHA-1 MACs ===
+  // (TLS 1.0/1.1 compat - for very old SMTP clients/servers)
+  // NOTE: SHA-1 in HMAC-SHA1 for record MAC is NOT the same as SHA-1
+  // in signatures; HMAC-SHA1 is still considered secure for MAC usage.
   'ECDHE-ECDSA-AES256-SHA',
   'ECDHE-RSA-AES256-SHA',
   'ECDHE-ECDSA-AES128-SHA',
   'ECDHE-RSA-AES128-SHA',
-  'DHE-RSA-AES256-SHA256',
-  'DHE-RSA-AES128-SHA256',
   'DHE-RSA-AES256-SHA',
   'DHE-RSA-AES128-SHA'
 ].join(':');

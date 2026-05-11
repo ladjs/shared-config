@@ -93,6 +93,31 @@ test('TLS_COMPAT_CIPHERS includes CBC ciphers for backward compat', (t) => {
   t.true(hasCBC, 'Compat list should include CBC ciphers');
 });
 
+test('TLS_COMPAT_CIPHERS: AEAD ciphers come before CBC ciphers', (t) => {
+  const ciphers = sharedConfig.TLS_COMPAT_CIPHERS.split(':');
+  const isAEAD = (c) => c.includes('GCM') || c.includes('CHACHA20');
+  const lastAEAD = Math.max(...ciphers.map((c, i) => (isAEAD(c) ? i : -1)));
+  const firstCBC = ciphers.findIndex((c) => !isAEAD(c));
+  t.true(
+    lastAEAD < firstCBC,
+    'All AEAD ciphers should come before CBC ciphers'
+  );
+});
+
+test('TLS_COMPAT_CIPHERS: CBC+SHA256/384 come before CBC+SHA1', (t) => {
+  const ciphers = sharedConfig.TLS_COMPAT_CIPHERS.split(':');
+  const isAEAD = (c) => c.includes('GCM') || c.includes('CHACHA20');
+  const isCBCSHA256 = (c) =>
+    !isAEAD(c) && (c.endsWith('-SHA256') || c.endsWith('-SHA384'));
+  const isCBCSHA1 = (c) => !isAEAD(c) && !isCBCSHA256(c) && c.endsWith('-SHA');
+  const firstCBCSHA256 = ciphers.findIndex((c) => isCBCSHA256(c));
+  const firstCBCSHA1 = ciphers.findIndex((c) => isCBCSHA1(c));
+  t.true(
+    firstCBCSHA256 < firstCBCSHA1,
+    'CBC+SHA256/384 ciphers should come before CBC+SHA1 ciphers'
+  );
+});
+
 test('TLS_CIPHERS prioritizes ECDHE over DHE', (t) => {
   const ciphers = sharedConfig.TLS_CIPHERS.split(':');
   let lastECDHEIndex = -1;
